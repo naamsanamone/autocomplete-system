@@ -15,11 +15,16 @@
   <em>Hybrid DSA × System Design portfolio project — no external search libraries used.</em>
 </p>
 
+<p align="center">
+  <img src="screenshots/search-ui.webp" alt="Autocomplete Search UI" width="800"/>
+</p>
+
 ---
 
 ## Table of Contents
 
 - [Why This Project?](#-why-this-project)
+- [Screenshots](#-screenshots)
 - [Features](#-features)
 - [Architecture](#-architecture)
 - [Core Data Structures](#-core-data-structures)
@@ -49,6 +54,42 @@ This project bridges that gap — every component is **hand-implemented** to dem
 | **Composite Ranking** | Strategy Pattern with 4 weighted scoring dimensions | System Design |
 | **Trending Service** | Sliding window counters with CAS-based concurrency | System Design |
 | **Search History** | Bounded FIFO with GDPR-compliant deletion | System Design |
+
+---
+
+## 📸 Screenshots
+
+### Search UI — Glassmorphism Theme with Prefix Highlighting
+
+<p align="center">
+  <img src="screenshots/search-ui.webp" alt="Search UI with autocomplete suggestions" width="800"/>
+</p>
+
+> Type a prefix and see ranked suggestions with score breakdowns, frequency counts, and response time.
+
+### Landing Page — Stats & Trending Dashboard
+
+<p align="center">
+  <img src="screenshots/landing-page.webp" alt="Landing page with corpus stats" width="800"/>
+</p>
+
+> The landing page shows corpus size (369 words, 2893 Trie nodes), average response time, and recent/trending panels.
+
+### Analytics Dashboard — System Metrics
+
+<p align="center">
+  <img src="screenshots/analytics-dashboard.webp" alt="Analytics dashboard" width="800"/>
+</p>
+
+> Real-time analytics: Trie stats, performance metrics, user history counts, and ranking strategy weight visualization.
+
+### Swagger API Docs — OpenAPI 3.0
+
+<p align="center">
+  <img src="screenshots/swagger-api-docs.webp" alt="Swagger API documentation" width="800"/>
+</p>
+
+> Interactive API explorer with all endpoints documented — try requests directly from the browser.
 
 ---
 
