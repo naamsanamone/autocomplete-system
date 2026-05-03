@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics — Autocomplete System</title>
+    <meta name="description" content="System analytics dashboard for the Autocomplete Search Engine.">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+</head>
+<body>
+
+<div class="analytics-container">
+
+    <!-- Header -->
+    <header class="analytics-header">
+        <h1 class="analytics-title">📊 System Analytics</h1>
+        <p class="app-subtitle">Real-time metrics from the Autocomplete Engine</p>
+        <div class="app-badges" style="margin-top: 12px">
+            <a href="/" class="badge badge-trie" style="text-decoration: none; cursor: pointer;">← Back to Search</a>
+            <a href="/swagger-ui.html" class="badge badge-api" style="text-decoration: none; cursor: pointer;">📖 API Docs</a>
+        </div>
+    </header>
+
+    <!-- Analytics Grid -->
+    <div class="analytics-grid" id="analytics-grid">
+
+        <!-- Corpus Stats -->
+        <div class="analytics-card">
+            <div class="analytics-card-header">
+                <span class="analytics-card-icon">🌳</span>
+                <span class="analytics-card-title">Trie / Corpus</span>
+            </div>
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">Words in Corpus</span>
+                <span class="analytics-metric-value" id="a-corpus-size">—</span>
+            </div>
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">Trie Nodes</span>
+                <span class="analytics-metric-value" id="a-node-count">—</span>
+            </div>
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">Max Depth</span>
+                <span class="analytics-metric-value" id="a-max-depth">—</span>
+            </div>
+        </div>
+
+        <!-- Performance -->
+        <div class="analytics-card">
+            <div class="analytics-card-header">
+                <span class="analytics-card-icon">⚡</span>
+                <span class="analytics-card-title">Performance</span>
+            </div>
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">Suggestion Requests</span>
+                <span class="analytics-metric-value" id="a-total-requests">—</span>
+            </div>
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">Total Searches Recorded</span>
+                <span class="analytics-metric-value" id="a-total-searches">—</span>
+            </div>
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">Avg Response Time</span>
+                <span class="analytics-metric-value" id="a-avg-time">—</span>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="analytics-card">
+            <div class="analytics-card-header">
+                <span class="analytics-card-icon">🕐</span>
+                <span class="analytics-card-title">User History</span>
+            </div>
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">Users with History</span>
+                <span class="analytics-metric-value" id="a-users">—</span>
+            </div>
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">Total History Entries</span>
+                <span class="analytics-metric-value" id="a-history-entries">—</span>
+            </div>
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">Tracked Trending Queries</span>
+                <span class="analytics-metric-value" id="a-trending-queries">—</span>
+            </div>
+        </div>
+
+        <!-- System -->
+        <div class="analytics-card">
+            <div class="analytics-card-header">
+                <span class="analytics-card-icon">🖥️</span>
+                <span class="analytics-card-title">System</span>
+            </div>
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">Uptime</span>
+                <span class="analytics-metric-value" id="a-uptime">—</span>
+            </div>
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">Java Version</span>
+                <span class="analytics-metric-value" id="a-java">—</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Ranking Weights -->
+    <div class="analytics-card" style="max-width: 600px; margin: 0 auto 24px">
+        <div class="analytics-card-header">
+            <span class="analytics-card-icon">🎯</span>
+            <span class="analytics-card-title">Ranking Strategy Weights</span>
+        </div>
+        <div id="ranking-weights"></div>
+    </div>
+
+    <!-- Trending -->
+    <div class="analytics-card" style="max-width: 600px; margin: 0 auto">
+        <div class="analytics-card-header">
+            <span class="analytics-card-icon">🔥</span>
+            <span class="analytics-card-title">Current Trending</span>
+        </div>
+        <div id="analytics-trending"></div>
+    </div>
+
+</div>
+
+<script th:src="@{/js/api.js}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadAll();
+        setInterval(loadAll, 3000);
+    });
+
+    async function loadAll() {
+        try {
+            const data = await API.getAnalytics();
+
+            // Corpus
+            setText('a-corpus-size', data.corpusSize);
+            setText('a-node-count', data.trieNodeCount);
+            setText('a-max-depth', data.trieMaxDepth);
+
+            // Performance
+            setText('a-total-requests', data.totalSuggestionRequests);
+            setText('a-total-searches', data.totalSearches);
+            setText('a-avg-time', data.averageResponseTimeMs.toFixed(2) + 'ms');
+
+            // History
+            setText('a-users', data.totalUsersWithHistory);
+            setText('a-history-entries', data.totalHistoryEntries);
+            setText('a-trending-queries', data.trackedTrendingQueries);
+
+            // System
+            setText('a-uptime', formatUptime(data.uptimeMs));
+            setText('a-java', data.javaVersion);
+
+            // Ranking weights
+            renderWeights(data.rankingWeights);
+
+        } catch (err) {
+            console.error('Analytics error:', err);
+        }
+
+        // Trending
+        try {
+            const trending = await API.getTrending(10);
+            renderTrending(trending.trending || []);
+        } catch (err) {
+            console.error('Trending error:', err);
+        }
+    }
+
+    function setText(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    }
+
+    function formatUptime(ms) {
+        const seconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        if (hours > 0) return `${hours}h ${minutes % 60}m`;
+        if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+        return `${seconds}s`;
+    }
+
+    function renderWeights(weights) {
+        const container = document.getElementById('ranking-weights');
+        if (!container || !weights) return;
+
+        container.innerHTML = Object.entries(weights).map(([name, weight]) => `
+            <div class="weight-bar">
+                <span class="weight-name">${name.replace(/_/g, ' ')}</span>
+                <div class="weight-track">
+                    <div class="weight-fill ${name}" style="width: ${weight * 100}%"></div>
+                </div>
+                <span class="weight-value">${(weight * 100).toFixed(0)}%</span>
+            </div>
+        `).join('');
+    }
+
+    function renderTrending(trending) {
+        const container = document.getElementById('analytics-trending');
+        if (!container) return;
+
+        if (trending.length === 0) {
+            container.innerHTML = '<div class="panel-empty">No trending data yet — try some searches!</div>';
+            return;
+        }
+
+        container.innerHTML = trending.map((item, i) => `
+            <div class="analytics-metric">
+                <span class="analytics-metric-label">
+                    <span style="color: var(--accent-amber); font-weight: 700; margin-right: 6px;">#${i + 1}</span>
+                    ${item.query}
+                </span>
+                <span class="analytics-metric-value">${item.count} searches</span>
+            </div>
+        `).join('');
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: autocomplete-system
+  thymeleaf:
+    cache: false
+
+# Autocomplete engine configuration
+autocomplete:
+  # Maximum suggestions returned per request
+  max-suggestions: 10
+  # Default number of suggestions if not specified
+  default-suggestions: 5
+  # Maximum search history entries per user
+  max-history-per-user: 100
+  # Trending window in minutes
+  trending-window-minutes: 60
+  # Ranking weights (must sum to 1.0)
+  ranking:
+    frequency-weight: 0.40
+    recency-weight: 0.20
+    prefix-match-weight: 0.25
+    personalization-weight: 0.15
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# OpenAPI / Swagger
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+
+# Logging
+logging:
+  level:
+    com.autocomplete: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

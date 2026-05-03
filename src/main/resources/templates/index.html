@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocomplete System — Trie + Heap Search Engine</title>
+    <meta name="description" content="Real-time autocomplete search engine powered by Trie data structure and Min-Heap Top-K ranking with composite scoring.">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- ═══ Header ═══ -->
+    <header class="app-header">
+        <div class="app-logo">🔍</div>
+        <h1 class="app-title">Autocomplete System</h1>
+        <p class="app-subtitle">
+            Real-time search suggestions powered by Trie + Min-Heap with composite ranking
+        </p>
+        <div class="app-badges">
+            <span class="badge badge-trie">⚡ Trie O(L)</span>
+            <span class="badge badge-heap">📊 Min-Heap Top-K</span>
+            <span class="badge badge-rank">🎯 Composite Ranking</span>
+            <span class="badge badge-api">🔗 REST API</span>
+        </div>
+    </header>
+
+    <!-- ═══ Search Bar ═══ -->
+    <section class="search-section">
+        <div class="search-wrapper">
+            <div class="search-container" id="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text"
+                       class="search-input"
+                       id="search-input"
+                       placeholder="Search technologies, algorithms, frameworks..."
+                       autocomplete="off"
+                       spellcheck="false">
+                <div class="search-meta">
+                    <span class="search-timer" id="search-timer">0.0ms</span>
+                    <button class="search-clear" id="search-clear" title="Clear">✕</button>
+                </div>
+            </div>
+
+            <!-- Suggestions Dropdown -->
+            <div class="suggestions-dropdown" id="suggestions-dropdown"></div>
+        </div>
+
+        <!-- Keyboard Hints -->
+        <div class="keyboard-hint" id="keyboard-hint">
+            <div class="kbd-group">
+                <kbd>↑</kbd><kbd>↓</kbd> <span>navigate</span>
+            </div>
+            <div class="kbd-group">
+                <kbd>Enter</kbd> <span>select</span>
+            </div>
+            <div class="kbd-group">
+                <kbd>Esc</kbd> <span>dismiss</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ Stats Bar ═══ -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value" id="stat-corpus">—</div>
+            <div class="stat-label">Words in Corpus</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="stat-nodes">—</div>
+            <div class="stat-label">Trie Nodes</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="stat-avgtime">—</div>
+            <div class="stat-label">Avg Response</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="stat-searches">—</div>
+            <div class="stat-label">Total Searches</div>
+        </div>
+    </div>
+
+    <!-- ═══ History & Trending Panels ═══ -->
+    <div class="panels-grid">
+        <!-- Search History -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">🕐 Recent Searches</span>
+                <button class="panel-action" id="clear-history">Clear</button>
+            </div>
+            <ul class="history-list" id="history-list">
+                <div class="panel-empty">No recent searches</div>
+            </ul>
+        </div>
+
+        <!-- Trending -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">🔥 Trending</span>
+                <span class="panel-action" style="cursor: default;">Live</span>
+            </div>
+            <ul class="trending-list" id="trending-list">
+                <div class="panel-empty">No trending searches yet</div>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ═══ Footer ═══ -->
+    <footer class="app-footer">
+        <div class="footer-links">
+            <a href="/analytics" class="footer-link">📊 Analytics Dashboard</a>
+            <a href="/swagger-ui.html" class="footer-link">📖 API Docs</a>
+        </div>
+        <div class="footer-credit">
+            Built with Spring Boot + Trie + Min-Heap • DSA + System Design
+        </div>
+    </footer>
+
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/js/api.js}"></script>
+<script th:src="@{/js/suggestions.js}"></script>
+<script th:src="@{/js/searchbar.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+
+</body>
+</html>
